@@ -19,7 +19,7 @@ func FormatCampaign(campaign Campaign) CampaignFormatter {
 	campaignFormatter.UserID = campaign.UserId
 	campaignFormatter.Name = campaign.Name
 	campaignFormatter.ShortDescription = campaign.ShortDescription
-	campaignFormatter.GoalAmount = campaign.GoalAmoun
+	campaignFormatter.GoalAmount = campaign.GoalAmount
 	campaignFormatter.CurrentAmount = campaign.CurrentAmount
 	campaignFormatter.Slug = campaign.Slug
 	campaignFormatter.ImageURL = ""
@@ -77,7 +77,7 @@ func FormatCampaignDetail(campaign Campaign) CampaignDetailFormatter{
 	campaignDetailFormater.ShortDescription = campaign.ShortDescription
 	campaignDetailFormater.Description = campaign.Description
 	campaignDetailFormater.ImageURL = ""
-	campaignDetailFormater.GoalAmount = campaign.GoalAmoun
+	campaignDetailFormater.GoalAmount = campaign.GoalAmount
 	campaignDetailFormater.CurrentAmount = campaign.CurrentAmount
 	campaignDetailFormater.Slug = campaign.Slug
 	campaignDetailFormater.UserID = campaign.UserId
