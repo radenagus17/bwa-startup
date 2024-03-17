@@ -5,12 +5,14 @@ import (
 	"bwastartup/campaign"
 	"bwastartup/handler"
 	"bwastartup/helper"
+	"bwastartup/payment"
 	"bwastartup/transaction"
 	"bwastartup/user"
 	"log"
 	"net/http"
 	"strings"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/driver/mysql"
@@ -34,7 +36,9 @@ func main() {
 	
 	userService := user.NewService(userRepository)
 
-	transactionService := transaction.NewService(transactionRepository, campaignRepository)
+	paymentService := payment.NewService()
+
+	transactionService := transaction.NewService(transactionRepository, campaignRepository, paymentService)
 
 	authService := auth.NewService()
 
@@ -45,6 +49,7 @@ func main() {
 	transactionHandler := handler.NewTransactionHandler(transactionService)
 
 	router := gin.Default()
+	router.Use(cors.Default())
 	api := router.Group("/api/v1")
 	router.Static("/images", "./images")
 
@@ -53,6 +58,7 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checker", userHandler.CheckEmailAvailability)
 	api.POST("/avatars",authMiddleware(authService, userService), userHandler.UploadAvatar)
+	api.GET("/users/fetch",authMiddleware(authService, userService), userHandler.FetchUser)
 	// campaign endpoint
 	api.GET("/campaigns",campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id",campaignHandler.GetCampaign)
@@ -62,6 +68,8 @@ func main() {
 	// transaction endpoint
 	api.GET("/campaigns/:id/transactions",authMiddleware(authService, userService),transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions",authMiddleware(authService, userService),transactionHandler.GetUserTransactions)
+	api.POST("/transactions",authMiddleware(authService, userService),transactionHandler.CreateTransaction)
+	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
 	router.Run()
 }
